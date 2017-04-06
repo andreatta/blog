@@ -1,0 +1,379 @@
+[[install]]
+= Arch Linux Installation Guide
+Cyril Andreatta <cyril@andreatta.ch>; Patrick Walther
+v1.1, 2017-04-01
+// Use FontAwesome icons
+:icons: font
+// Source Code highlighter
+:source-highlighter: pygments
+:pygments-style: manni
+:pygments-linenums-mode: inline
+:description: Arch Linux Installation Guide
+:keywords: Arch Linux Installation
+// experimental features for keyboard symbols
+:experimental:
+:sectnums:
+:toc: macro
+:toclevels: 3
+:toc-title: Table of Content
+:sectnum:
+:sectlinks:
+:chapter-label:
+
+[abstract]
+This is just a small memory helper for our personal use.
+
+To gain deeper knowledge, the fabulous https://wiki.archlinux.org/index.php/Installation_guide[Arch Wiki] should be considered.
+
+[NOTE]
+.Explanation for used icons.
+====
+icon:terminal[2x]
+Commands that should literrally being input to the console.
+
+icon:file-text-o[2x]
+Files that should be edited according to the given instructions.
+====
+
+toc::[]
+
+== Check Harddisks
+
+[WARNING]
+Choose the disk you are going to format wisely!
+
+icon:terminal[]
+List all installed harddisks.
+....
+lsblk
+....
+
+[NOTE]
+In this document `sda1` is used as the boot partition, `sda2` is the root partition.
+This might be different on each computer, depending on hardware and individual settings.
+
+== Download current Arch Linux iso
+Go to the https://www.archlinux.org/releng/releases/2017.04.01/torrent/[Arch Linux homepage] and townload the boot image to install.
+
+icon:terminal[]
+Write downloaded image to USB thumb-drive.
+....
+sudo dd if=archlinux-2017.04.01-x86_64.iso of=/dev/sdX bs=4M && sync
+....
+
+[WARNING]
+====
+Check again wich drive you are going to overwrite with `dd`. That command overwrites the whole drive and is *not* reversible.  If you are sure replace `/dev/sdX`.
+====
+
+== Set keyboard layout
+icon:terminal[]
+List all available keyboard maps and optionally filter for your preferred language.
+....
+ls /usr/share/kbd/keymaps/**/*.map.gz | grep -i ch
+....
+
+icon:terminal[]
+Load preferred keyboard layout.
+....
+loadkeys de_CH-latin1
+....
+
+== Create Partitions
+icon:terminal[]
+Create new partitions with gdisk.
+....
+gdisk /dev/sda
+....
+
+=== Delete current partitions
+icon:terminal[]
+[horizontal]
+p 		kbd:[Enter]:: display current partitions.
+d		kbd:[Enter]:: delete partition
+1	 	kbd:[Enter]:: select partition to delet
+d		kbd:[Enter]:: delete partition (automatically selected if only one)
+
+[TIP]
+.If you have 8GB or less of memory, a swap partition might be a good idea.
+====
+Create a separate partiotion `/dev/sdaX` and set it up for swap.
+....
+mkswap /dev/sdaX
+swapon /dev/sdaX
+....
+====
+
+=== Create first partition for `boot`
+icon:terminal[]
+Create new partitions with gdisk.
+[horizontal]
+n 		kbd:[Enter]:: create new partition
+		kbd:[Enter]:: start from first free sector
++512M 	kbd:[Enter]:: set size of EFI partition
+ef00 	kbd:[Enter]:: set type of partition to EFI
+
+=== Create second partition for `root`
+icon:terminal[]
+Create new partitions with gdisk.
+[horizontal]
+n 		kbd:[Enter]:: create new partition
+		kbd:[Enter]:: start from first free sector
+		kbd:[Enter]:: set size of Linux partition (use full size)
+8300  	kbd:[Enter]:: set type of partition to Linux
+w 		kbd:[Enter]:: write changes to disk
+y 		kbd:[Enter]:: confirm
+
+== Make Filesystem
+icon:terminal[]
+Format the `/boot` partition as FAT32.
+The `/root` partition can be formated as `btrfs`, `ext4` or whatever you prefer.
+....
+mkfs.vfat /dev/sda1
+mkfs.btrfs /dev/sda2
+....
+
+== Mount Partitions
+icon:terminal[]
+Mount the `root` partition to folder _/mnt_ and then create a folder _boot_ in it, where you mount the other partition `boot`.
+....
+mount /dev/sda2 /mnt
+mkdir /mnt/boot
+mount /dev/sda1 /mnt/boot
+....
+
+== Optionally set mirrors
+icon:file-text-o[]
+You can place servers near your country on top to increase speed.
+....
+/etc/pacman.d/mirrorlist
+....
+
+== Setup Network connections
+Either plugin a Ethernet cable or setup WiFi.
+
+....
+wifi_menu
+....
+
+[TIP]
+====
+Check connection
+....
+ping nba.com
+....
+====
+
+== Start installing base system
+icon:terminal[]
+....
+pacstrap /mnt base base-devel
+....
+
+== Generate fstab File
+icon:terminal[]
+Write currently mounted partitions to _fstab_ file to make it persistant, then check the content of the created file.
+....
+genfstab -U /mnt >> /mnt/etc/fstab
+cat !$
+....
+
+== Chroot
+icon:terminal[]
+Change into https://wiki.archlinux.org/index.php/Change_root[chroot] environment, which is basically you already logged in to the system you are going to create.
+Everything you do or install here is going to be in your final installation.
+....
+arch-chroot /mnt
+....
+
+== Edit pacman Config
+icon:file-text-o[]
+Uncomment `[multilib]` repo and line below.
+....
+/etc/pacman.conf
+....
+
+[TIP]
+.In vim you can search with `/`, then go to beginning of line `0` and clear one character `x`. Then go one line down `j` and do the same.
+====
+....
+/[multi
+0x
+j0x
+....
+====
+
+[TIP]
+.Under _Misc Options_ set or uncomment following options.
+====
+....
+Color
+CheckSpace
+ILoveCandy
+....
+====
+
+== Update and Install packages
+icon:terminal[]
+....
+ pacman -Syu
+ pacman -S vim git sudo dialog wpa_supplicant iw wget efibootmgr intel-ucode
+....
+
+== Set Timezone and hardware clock
+icon:terminal[]
+....
+ln -sf /usr/share/zoneinfo/Europe/Zurich /etc/localtime
+hwclock --systohc --utc
+....
+
+== Set Locale Settings
+icon:file-text-o[]
+Uncomment additional needed https://wiki.archlinux.org/index.php/Locale[localalizations], `en_US` should already be uncommented.
+....
+/etc/locale.gen
+....
+
+[TIP]
+.Search for `de_CH` delete `#` and save file in vim.
+====
+....
+/de_CH
+0
+x
+ZZ
+....
+====
+
+icon:terminal[]
+Activate locales.
+....
+locale-gen
+....
+
+icon:file-text-o[]
+Set main language of system to `de_CH` and set some system wide settings.
+....
+/etc/locale.conf
+....
+
+....
+LANG=de_CH.UTF-8
+LC_PAPER=a4
+....
+
+icon:file-text-o[]
+Set input language for virtual console (before X is started).
+....
+/etc/vconsole.conf
+....
+
+....
+KEYMAP=de_CH-latin1
+....
+
+== Set Hostname
+icon:file-text-o[]
+Give your computer a cool name.
+....
+/etc/hostname
+....
+
+== Set Root password
+icon:terminal[]
+Set new password when promted, then enter it again.
+....
+passwd
+....
+
+== Create a new User
+icon:terminal[]
+....
+useradd -mg users -G wheel,optical,lock,uucp <NEW_USER>
+passwd <NEW_USER>
+....
+
+=== Let the User do sudo
+icon:terminal[]
+Open file and uncomment line `%wheel ALL=(ALL) ALL`.
+....
+visudo
+....
+
+== Create mkinitramfs
+icon:terminal[]
+Run https://wiki.archlinux.org/index.php/Mkinitcpio[mkinitcpio] to generate icon:linux[] Linux image.
+....
+mkinitcpio -p linux
+....
+
+== Install Bootloader
+
+=== Systemd-Boot (pka GummiBoot) [recommended]
+https://wiki.archlinux.org/index.php/Systemd-boot[Arch Wiki]
+
+icon:terminal[]
+Check if EFI is mounted and install _systemd-boot_.
+....
+efivar -l
+bootctl --path=/boot install
+....
+
+icon:file-text-o[]
+Create a file for each image (Linux system) you want to be able to start.
+....
+/boot/loader/entries/arch.conf
+....
+
+This file should contain following lines, while the *PARTUUID* should be adapted to your hardware.
+....
+title       Arch Linux
+linux       /vmlinuz-linux
+initrd  	/intel-ucode.img
+initrd      /initramfs-linux.img
+options     root=PARTUUID=XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX rw
+....
+
+[TIP]
+.Get PARTUUID from first harddisk sda1
+====
+....
+ls -l /dev/disk/by-partuuid | grep sda1 | cut -d' ' -f9
+....
+====
+
+==== Update _systemd-boot_ after every release
+icon:terminal[]
+....
+bootctl --path=/boot update
+....
+
+[TIP]
+.Alternatively you can install a package from AUR which adds a Pacman hook , that updates systemd-boot automatically.
+====
+....
+packer systemd-boot-pacman-hook
+....
+====
+
+=== Grub [only recommended for non UEFI systems]
+icon:terminal[]
+Install Grub.
+....
+sudo pacman -S grub
+....
+
+icon:terminal[]
+Select harddisk to install grub to. *No* seperate partition needed!
+....
+grub-install --target=i386-pc /dev/sda
+....
+
+== Finish and clean-up
+icon:terminal[]
+....
+exit
+umount -a
+reboot
+....
+
