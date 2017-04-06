@@ -1,0 +1,867 @@
+<!doctype html>
+<!--[if IE 9]>
+<html class="lt-ie10" lang="en"> <![endif]-->
+<html class="no-js" lang="en" data-useragent="Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; Trident/6.0)">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arch Linux Install Guide</title>
+    <meta name="description" content="A guide and memory helper to install Arch Linux">
+    <meta name="author" content="Your name goes here">
+    <meta name="copyright" content="Maybe consider a Creative Commons license">
+    <link rel="stylesheet" href="../../../css/foundation.css">
+    <link rel="stylesheet" href="../../../css/font-awesome.css">
+    <link rel="stylesheet" href="../../../css/coderay.css">
+    <link rel="stylesheet" href="../../../css/asciidoctor.css">
+    <script src="../../../js/vendor/modernizr.js"></script>
+    <script src="../../../js/toc.js"></script>
+</head>
+<body>
+
+
+<!-- Nav Bar -->
+
+<nav class="top-bar" data-topbar>
+    <ul class="title-area">
+        <!-- Title Area -->
+        <li class="name">
+            <h1>
+                <a href="../../../">Jekyll AsciiDoc Quickstart</a>
+            </h1>
+        </li>
+        <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
+    </ul>
+</nav>
+<!-- End Nav -->
+
+
+<!-- Main Page Content and Sidebar -->
+
+<div class="row">
+
+    <!-- Main Blog Content -->
+    <div class="large-9 columns" role="content">
+
+        <h1>Arch Linux Installation Guide</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="quoteblock abstract">
+<blockquote>
+This is just a small memory helper for our personal use.
+</blockquote>
+</div>
+<div class="paragraph">
+<p>To gain deeper knowledge, the fabulous <a href="https://wiki.archlinux.org/index.php/Installation_guide">Arch Wiki</a> should be considered.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">Explanation for used icons.</div>
+<div class="paragraph">
+<p><span class="icon"><i class="fa fa-terminal fa-2x"></i></span>
+Commands that should literrally being input to the console.</p>
+</div>
+<div class="paragraph">
+<p><span class="icon"><i class="fa fa-file-text-o fa-2x"></i></span>
+Files that should be edited according to the given instructions.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<!-- toc disabled -->
+</div>
+</div>
+<div class="sect1">
+<h2 id="check_harddisks"><a class="link" href="#check_harddisks">1. Check Harddisks</a></h2>
+<div class="sectionbody">
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Choose the disk you are going to format wisely!
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><span class="icon"><i class="fa fa-terminal"></i></span>
+List all installed harddisks.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>lsblk</pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+In this document <code>sda1</code> is used as the boot partition, <code>sda2</code> is the root partition.
+This might be different on each computer, depending on hardware and individual settings.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="download_current_arch_linux_iso"><a class="link" href="#download_current_arch_linux_iso">2. Download current Arch Linux iso</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Go to the <a href="https://www.archlinux.org/releng/releases/2017.04.01/torrent/">Arch Linux homepage</a> and townload the boot image to install.</p>
+</div>
+<div class="paragraph">
+<p><span class="icon"><i class="fa fa-terminal"></i></span>
+Write downloaded image to USB thumb-drive.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>sudo dd if=archlinux-2017.04.01-x86_64.iso of=/dev/sdX bs=4M &amp;&amp; sync</pre>
+</div>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Check again wich drive you are going to overwrite with <code>dd</code>. That command overwrites the whole drive and is <strong>not</strong> reversible.  If you are sure replace <code>/dev/sdX</code>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="set_keyboard_layout"><a class="link" href="#set_keyboard_layout">3. Set keyboard layout</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><span class="icon"><i class="fa fa-terminal"></i></span>
+List all available keyboard maps and optionally filter for your preferred language.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>ls /usr/share/kbd/keymaps/**/*.map.gz | grep -i ch</pre>
+</div>
+</div>
+<div class="paragraph">
+<p><span class="icon"><i class="fa fa-terminal"></i></span>
+Load preferred keyboard layout.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>loadkeys de_CH-latin1</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="create_partitions"><a class="link" href="#create_partitions">4. Create Partitions</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><span class="icon"><i class="fa fa-terminal"></i></span>
+Create new partitions with gdisk.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>gdisk /dev/sda</pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="delete_current_partitions"><a class="link" href="#delete_current_partitions">4.1. Delete current partitions</a></h3>
+<div class="paragraph">
+<p><span class="icon"><i class="fa fa-terminal"></i></span></p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+p 		<kbd>Enter</kbd>
+</td>
+<td class="hdlist2">
+<p>display current partitions.</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+d		<kbd>Enter</kbd>
+</td>
+<td class="hdlist2">
+<p>delete partition</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+1	 	<kbd>Enter</kbd>
+</td>
+<td class="hdlist2">
+<p>select partition to delet</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+d		<kbd>Enter</kbd>
+</td>
+<td class="hdlist2">
+<p>delete partition (automatically selected if only one)</p>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="title">If you have 8GB or less of memory, a swap partition might be a good idea.</div>
+<div class="paragraph">
+<p>Create a separate partiotion <code>/dev/sdaX</code> and set it up for swap.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>mkswap /dev/sdaX
+swapon /dev/sdaX</pre>
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="create_first_partition_for_code_boot_code"><a class="link" href="#create_first_partition_for_code_boot_code">4.2. Create first partition for <code>boot</code></a></h3>
+<div class="paragraph">
+<p><span class="icon"><i class="fa fa-terminal"></i></span>
+Create new partitions with gdisk.</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+n 		<kbd>Enter</kbd>
+</td>
+<td class="hdlist2">
+<p>create new partition</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<kbd>Enter</kbd>
+</td>
+<td class="hdlist2">
+<p>start from first free sector</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
++512M 	<kbd>Enter</kbd>
+</td>
+<td class="hdlist2">
+<p>set size of EFI partition</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+ef00 	<kbd>Enter</kbd>
+</td>
+<td class="hdlist2">
+<p>set type of partition to EFI</p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="create_second_partition_for_code_root_code"><a class="link" href="#create_second_partition_for_code_root_code">4.3. Create second partition for <code>root</code></a></h3>
+<div class="paragraph">
+<p><span class="icon"><i class="fa fa-terminal"></i></span>
+Create new partitions with gdisk.</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+n 		<kbd>Enter</kbd>
+</td>
+<td class="hdlist2">
+<p>create new partition</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<kbd>Enter</kbd>
+</td>
+<td class="hdlist2">
+<p>start from first free sector</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<kbd>Enter</kbd>
+</td>
+<td class="hdlist2">
+<p>set size of Linux partition (use full size)</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+8300  	<kbd>Enter</kbd>
+</td>
+<td class="hdlist2">
+<p>set type of partition to Linux</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+w 		<kbd>Enter</kbd>
+</td>
+<td class="hdlist2">
+<p>write changes to disk</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+y 		<kbd>Enter</kbd>
+</td>
+<td class="hdlist2">
+<p>confirm</p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="make_filesystem"><a class="link" href="#make_filesystem">5. Make Filesystem</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><span class="icon"><i class="fa fa-terminal"></i></span>
+Format the <code>/boot</code> partition as FAT32.
+The <code>/root</code> partition can be formated as <code>btrfs</code>, <code>ext4</code> or whatever you prefer.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>mkfs.vfat /dev/sda1
+mkfs.btrfs /dev/sda2</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="mount_partitions"><a class="link" href="#mount_partitions">6. Mount Partitions</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><span class="icon"><i class="fa fa-terminal"></i></span>
+Mount the <code>root</code> partition to folder <em>/mnt</em> and then create a folder <em>boot</em> in it, where you mount the other partition <code>boot</code>.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>mount /dev/sda2 /mnt
+mkdir /mnt/boot
+mount /dev/sda1 /mnt/boot</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="optionally_set_mirrors"><a class="link" href="#optionally_set_mirrors">7. Optionally set mirrors</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><span class="icon"><i class="fa fa-file-text-o"></i></span>
+You can place servers near your country on top to increase speed.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>/etc/pacman.d/mirrorlist</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="setup_network_connections"><a class="link" href="#setup_network_connections">8. Setup Network connections</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Either plugin a Ethernet cable or setup WiFi.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>wifi_menu</pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Check connection</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>ping nba.com</pre>
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="start_installing_base_system"><a class="link" href="#start_installing_base_system">9. Start installing base system</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><span class="icon"><i class="fa fa-terminal"></i></span></p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>pacstrap /mnt base base-devel</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="generate_fstab_file"><a class="link" href="#generate_fstab_file">10. Generate fstab File</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><span class="icon"><i class="fa fa-terminal"></i></span>
+Write currently mounted partitions to <em>fstab</em> file to make it persistant, then check the content of the created file.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>genfstab -U /mnt &gt;&gt; /mnt/etc/fstab
+cat !$</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="chroot"><a class="link" href="#chroot">11. Chroot</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><span class="icon"><i class="fa fa-terminal"></i></span>
+Change into <a href="https://wiki.archlinux.org/index.php/Change_root">chroot</a> environment, which is basically you already logged in to the system you are going to create.
+Everything you do or install here is going to be in your final installation.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>arch-chroot /mnt</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="edit_pacman_config"><a class="link" href="#edit_pacman_config">12. Edit pacman Config</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><span class="icon"><i class="fa fa-file-text-o"></i></span>
+Uncomment <code>[multilib]</code> repo and line below.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>/etc/pacman.conf</pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="title">In vim you can search with <code>/</code>, then go to beginning of line <code>0</code> and clear one character <code>x</code>. Then go one line down <code>j</code> and do the same.</div>
+<div class="literalblock">
+<div class="content">
+<pre>/[multi
+0x
+j0x</pre>
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="title">Under <em>Misc Options</em> set or uncomment following options.</div>
+<div class="literalblock">
+<div class="content">
+<pre>Color
+CheckSpace
+ILoveCandy</pre>
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="update_and_install_packages"><a class="link" href="#update_and_install_packages">13. Update and Install packages</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><span class="icon"><i class="fa fa-terminal"></i></span></p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre> pacman -Syu
+ pacman -S vim git sudo dialog wpa_supplicant iw wget efibootmgr intel-ucode</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="set_timezone_and_hardware_clock"><a class="link" href="#set_timezone_and_hardware_clock">14. Set Timezone and hardware clock</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><span class="icon"><i class="fa fa-terminal"></i></span></p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>ln -sf /usr/share/zoneinfo/Europe/Zurich /etc/localtime
+hwclock --systohc --utc</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="set_locale_settings"><a class="link" href="#set_locale_settings">15. Set Locale Settings</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><span class="icon"><i class="fa fa-file-text-o"></i></span>
+Uncomment additional needed <a href="https://wiki.archlinux.org/index.php/Locale">localalizations</a>, <code>en_US</code> should already be uncommented.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>/etc/locale.gen</pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="title">Search for <code>de_CH</code> delete <code>#</code> and save file in vim.</div>
+<div class="literalblock">
+<div class="content">
+<pre>/de_CH
+0
+x
+ZZ</pre>
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><span class="icon"><i class="fa fa-terminal"></i></span>
+Activate locales.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>locale-gen</pre>
+</div>
+</div>
+<div class="paragraph">
+<p><span class="icon"><i class="fa fa-file-text-o"></i></span>
+Set main language of system to <code>de_CH</code> and set some system wide settings.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>/etc/locale.conf</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>LANG=de_CH.UTF-8
+LC_PAPER=a4</pre>
+</div>
+</div>
+<div class="paragraph">
+<p><span class="icon"><i class="fa fa-file-text-o"></i></span>
+Set input language for virtual console (before X is started).</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>/etc/vconsole.conf</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>KEYMAP=de_CH-latin1</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="set_hostname"><a class="link" href="#set_hostname">16. Set Hostname</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><span class="icon"><i class="fa fa-file-text-o"></i></span>
+Give your computer a cool name.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>/etc/hostname</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="set_root_password"><a class="link" href="#set_root_password">17. Set Root password</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><span class="icon"><i class="fa fa-terminal"></i></span>
+Set new password when promted, then enter it again.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>passwd</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="create_a_new_user"><a class="link" href="#create_a_new_user">18. Create a new User</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><span class="icon"><i class="fa fa-terminal"></i></span></p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>useradd -mg users -G wheel,optical,lock,uucp &lt;NEW_USER&gt;
+passwd &lt;NEW_USER&gt;</pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="let_the_user_do_sudo"><a class="link" href="#let_the_user_do_sudo">18.1. Let the User do sudo</a></h3>
+<div class="paragraph">
+<p><span class="icon"><i class="fa fa-terminal"></i></span>
+Open file and uncomment line <code>%wheel ALL=(ALL) ALL</code>.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>visudo</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="create_mkinitramfs"><a class="link" href="#create_mkinitramfs">19. Create mkinitramfs</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><span class="icon"><i class="fa fa-terminal"></i></span>
+Run <a href="https://wiki.archlinux.org/index.php/Mkinitcpio">mkinitcpio</a> to generate <span class="icon"><i class="fa fa-linux"></i></span> Linux image.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>mkinitcpio -p linux</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="install_bootloader"><a class="link" href="#install_bootloader">20. Install Bootloader</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="systemd_boot_pka_gummiboot_recommended"><a class="link" href="#systemd_boot_pka_gummiboot_recommended">20.1. Systemd-Boot (pka GummiBoot) [recommended]</a></h3>
+<div class="paragraph">
+<p><a href="https://wiki.archlinux.org/index.php/Systemd-boot">Arch Wiki</a></p>
+</div>
+<div class="paragraph">
+<p><span class="icon"><i class="fa fa-terminal"></i></span>
+Check if EFI is mounted and install <em>systemd-boot</em>.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>efivar -l
+bootctl --path=/boot install</pre>
+</div>
+</div>
+<div class="paragraph">
+<p><span class="icon"><i class="fa fa-file-text-o"></i></span>
+Create a file for each image (Linux system) you want to be able to start.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>/boot/loader/entries/arch.conf</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This file should contain following lines, while the <strong>PARTUUID</strong> should be adapted to your hardware.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>title       Arch Linux
+linux       /vmlinuz-linux
+initrd  	/intel-ucode.img
+initrd      /initramfs-linux.img
+options     root=PARTUUID=XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX rw</pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="title">Get PARTUUID from first harddisk sda1</div>
+<div class="literalblock">
+<div class="content">
+<pre>ls -l /dev/disk/by-partuuid | grep sda1 | cut -d' ' -f9</pre>
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect3">
+<h4 id="update_em_systemd_boot_em_after_every_release"><a class="link" href="#update_em_systemd_boot_em_after_every_release">20.1.1. Update <em>systemd-boot</em> after every release</a></h4>
+<div class="paragraph">
+<p><span class="icon"><i class="fa fa-terminal"></i></span></p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>bootctl --path=/boot update</pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="title">Alternatively you can install a package from AUR which adds a Pacman hook , that updates systemd-boot automatically.</div>
+<div class="literalblock">
+<div class="content">
+<pre>packer systemd-boot-pacman-hook</pre>
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="grub_only_recommended_for_non_uefi_systems"><a class="link" href="#grub_only_recommended_for_non_uefi_systems">20.2. Grub [only recommended for non UEFI systems]</a></h3>
+<div class="paragraph">
+<p><span class="icon"><i class="fa fa-terminal"></i></span>
+Install Grub.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>sudo pacman -S grub</pre>
+</div>
+</div>
+<div class="paragraph">
+<p><span class="icon"><i class="fa fa-terminal"></i></span>
+Select harddisk to install grub to. <strong>No</strong> seperate partition needed!</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>grub-install --target=i386-pc /dev/sda</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="finish_and_clean_up"><a class="link" href="#finish_and_clean_up">21. Finish and clean-up</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><span class="icon"><i class="fa fa-terminal"></i></span></p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>exit
+umount -a
+reboot</pre>
+</div>
+</div>
+</div>
+</div>
+
+    </div>
+
+    <!-- End Main Content -->
+
+    <!-- Sidebar -->
+
+    <aside class="large-3 columns">
+
+        <h4>Posts</h4>
+        <ul id="posts" class="posts nav">
+            
+            <li><a href="./2017/04/01/install_arch.html">Arch Linux Install Guide</a></li>
+            
+        </ul>
+
+        <div class="panel">
+            <h5>Featured</h5>
+
+            <p>Pork drumstick turkey fugiat. Tri-tip elit turducken pork chop in. Swine short ribs meatball irure bacon
+                nulla pork belly cupidatat meatloaf cow.</p>
+        </div>
+
+    </aside>
+
+    <!-- End Sidebar -->
+</div>
+
+<!-- End Main Content and Sidebar -->
+
+
+<!-- Footer -->
+
+<footer class="row">
+    <div class="large-12 columns">
+        <hr>
+        <div class="row">
+            <div class="large-12 columns">
+                <p>Footer</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script src="../../../js/vendor/jquery.js"></script>
+<script src="../../../js/foundation.min.js"></script>
+<script>
+$(document).foundation();
+var doc = document.documentElement;
+doc.setAttribute('data-useragent', navigator.userAgent);
+</script>
+</body>
+</html>
