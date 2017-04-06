@@ -1,10 +1,11 @@
-[[install]]
 = Arch Linux Installation Guide
 Cyril Andreatta <cyril@andreatta.ch>; Patrick Walther
 v1.1, 2017-04-01
 // Website settings
 :showtitle:
+:page-title: Arch Linux Install Guide
 :page-navtitle: Arch Linux Install Guide
+:page-description: A guide and memory helper to install Arch Linux
 :page-root: ../../../
 
 // Use FontAwesome icons
