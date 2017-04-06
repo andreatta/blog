@@ -2,6 +2,11 @@
 = Arch Linux Installation Guide
 Cyril Andreatta <cyril@andreatta.ch>; Patrick Walther
 v1.1, 2017-04-01
+// Website settings
+:showtitle:
+:page-navtitle: Arch Linux Install Guide
+:page-root: ../../../
+
 // Use FontAwesome icons
 :icons: font
 // Source Code highlighter
