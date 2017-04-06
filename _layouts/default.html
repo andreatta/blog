@@ -7,8 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{page.title}}</title>
     <meta name="description" content="{% if page.description %}{{ page.description }}{% else %}{{ site.description }}{% endif %}">
-    <meta name="author" content="Your name goes here">
-    <meta name="copyright" content="Maybe consider a Creative Commons license">
+    <meta name="author" content="andreatta">
+    <meta name="copyright" content="WTFPL">
     <link rel="stylesheet" href="{{page.root}}css/foundation.css">
     <link rel="stylesheet" href="{{page.root}}css/font-awesome.css">
     <link rel="stylesheet" href="{{page.root}}css/coderay.css">
@@ -18,16 +18,12 @@
 </head>
 <body>
 
-
 <!-- Nav Bar -->
-
 <nav class="top-bar" data-topbar>
     <ul class="title-area">
         <!-- Title Area -->
         <li class="name">
-            <h1>
-                <a href="{{page.root}}">{{site.title}}</a>
-            </h1>
+            <h1><a href="{{page.root}}">{{site.title}}</a></h1>
         </li>
         <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
     </ul>
@@ -36,20 +32,15 @@
 
 
 <!-- Main Page Content and Sidebar -->
-
 <div class="row">
 
     <!-- Main Blog Content -->
     <div class="large-9 columns" role="content">
-
         {{ content }}
-
     </div>
-
     <!-- End Main Content -->
 
     <!-- Sidebar -->
-
     <aside class="large-3 columns">
 
         <h4>Posts</h4>
@@ -61,27 +52,20 @@
 
         <div class="panel">
             <h5>Featured</h5>
-
-            <p>Pork drumstick turkey fugiat. Tri-tip elit turducken pork chop in. Swine short ribs meatball irure bacon
-                nulla pork belly cupidatat meatloaf cow.</p>
         </div>
 
     </aside>
-
     <!-- End Sidebar -->
 </div>
-
 <!-- End Main Content and Sidebar -->
 
-
 <!-- Footer -->
-
 <footer class="row">
     <div class="large-12 columns">
         <hr>
         <div class="row">
             <div class="large-12 columns">
-                <p>Footer</p>
+            	<h1><a href="{{page.root}}">{{site.title}}</a></h1>
             </div>
         </div>
     </div>

@@ -3,4 +3,4 @@
 :page-title: andreatta blog
 :page-description: My extended RAM...
 
-Guides, Cheatsheets and random stuff I'd like to remember.
+Guides, Cheatsheets and random stuff i keep forgetting.

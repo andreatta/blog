@@ -1,0 +1,128 @@
+[[setup_wm]]
+= Setup Window Manager
+Cyril Andreatta <cyril@andreatta.ch>; Patrick Walther
+v1.1, 2017-04-02
+// Use FontAwesome icons
+:icons: font
+// Source Code highlighter
+:source-highlighter: pygments
+:pygments-style: manni
+:pygments-linenums-mode: inline
+:description: Setup Window Manager
+:keywords: Arch Linux Installation Setup X-Server i3wm XFCE
+// experimental features for keyboard symbols
+:experimental:
+:sectnums:
+:toc: macro
+:toclevels: 3
+:toc-title: Table of Content
+:sectnum:
+:sectlinks:
+:chapter-label:
+
+[abstract]
+Install and setup X-Server with a window manager.
+
+toc::[]
+
+== Install Graphic Card Drivers
+[TIP]
+.Get name of your graphics card.
+====
+lspci | grep VGA
+====
+
+[TIP]
+.Get resolution from your used monitor.
+====
+xdpyinfo | grep -B2 resolution
+====
+
+== Connect to Internet
+icon:terminal[]
+Setup WiFi connection and check if google DNS server is accessible
+....
+ip a
+sudo ip link set wlp2s0 up
+wifi-menu
+ping 8.8.8.8
+....
+
+== Install needed Packages
+icon:terminal[]
+....
+sudo pacman -S xorg-server xorg-xinit xorg-server-utils mesa lib32-mesa xf86-video-intel xf86-input-synaptics
+....
+
+== Install Window Manager
+Install your preferred window manager.
+
+=== i3wm
+icon:terminal[]
+A great tiling window manager is https://wiki.archlinux.org/index.php/I3[i3].
+....
+sudo pacman -S i3
+....
+
+=== XFCE
+icon:terminal[]
+Alternatively you could install https://wiki.archlinux.org/index.php/Xfce[XFCE].
+....
+sudo pacman -S xfce4{,-goodies}
+....
+
+== Start Window Manager on Login
+
+=== Basic setup with console login
+icon:file-text-o[]
+Copy the template to your locale folder and change the exec line as follows.
+....
+cp /etc/X11/xinit/xinitrc ~/.xinitrc
+....
+....
+exec i3
+....
+or
+....
+exec startxfce4
+....
+
+== Automatically start Window Manager on Login
+=== Basic Console Login
+icon:file-text-o[] Add following lines to your `~/.bash_profile` or `~/.zsh_profile`.
+[source,bash]
+----
+if [ -z "$DISPLAY" ] && [ -n "$XDG_VTNR" ] && [ "$XDG_VTNR" -eq 1 ]; then
+	exec startx
+fi
+----
+
+=== Start GUI with Display Manager
+icon:terminal[]
+If you prefer a graphical login screen, you need a https://wiki.archlinux.org/index.php/Display_manager[display manager].
+....
+sudo pacman -S ligthdm{,-gtk-greeter,-gtk-greeter-settings}
+....
+
+icon:terminal[]
+Enable display manager on startup.
+....
+sudo systemctl enable lightdm.service
+....
+
+== Set font used for vconsole (boot-up)
+icon:file-text-o[]
+Change font used as boot-up font in vconsle.
+....
+/etc/vconsole.conf
+....
+....
+FONT=ter-powerline-v20b
+....
+
+[TIP]
+.Get available fonts for console
+====
+ls -l /etc/share/kbd/consolefonts
+====
+
