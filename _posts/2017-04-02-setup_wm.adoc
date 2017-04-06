@@ -1,7 +1,14 @@
 [[setup_wm]]
-= Setup Window Manager
+= Setup Window Manager on Arch Linux
 Cyril Andreatta <cyril@andreatta.ch>; Patrick Walther
 v1.1, 2017-04-02
+// Website settings
+:showtitle:
+:page-title: Setup Window Manager on Arch Linux
+:page-navtitle: Setup Window Manager on Arch Linux
+:page-description: A guide to install i3 or XFCE on Arch Linux
+:page-root: ../../../
+
 // Use FontAwesome icons
 :icons: font
 // Source Code highlighter
