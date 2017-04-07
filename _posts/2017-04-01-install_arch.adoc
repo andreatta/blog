@@ -6,6 +6,7 @@ v1.1, 2017-04-01
 :page-title: Arch Linux Install Guide
 :page-navtitle: Arch Linux Install Guide
 :page-description: A guide and memory helper to install Arch Linux
+:page-root: https://andreatta.github.io/blog
 
 // Use FontAwesome icons
 :icons: font

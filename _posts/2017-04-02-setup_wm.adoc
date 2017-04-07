@@ -7,6 +7,7 @@ v1.1, 2017-04-02
 :page-title: Setup Window Manager on Arch Linux
 :page-navtitle: Setup Window Manager on Arch Linux
 :page-description: A guide to install i3 or XFCE on Arch Linux
+:page-root: https://andreatta.github.io/blog
 
 // Use FontAwesome icons
 :icons: font
