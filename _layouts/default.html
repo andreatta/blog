@@ -46,7 +46,11 @@
         <h4>Posts</h4>
         <ul id="posts" class="posts nav">
             {% for post in site.posts limit: 5 %}
+<<<<<<< HEAD
 			<li><a href="{{page.root}}{{post.url}}">{{ post.navtitle }}</a></li>
+=======
+			<li><a href="{{page-root}}{{ post.url }}">{{ post.navtitle }}</a></li>
+>>>>>>> 37cf36966b8c749f8fd70ac9b4cb24dd79e78b56
             {% endfor %}
         </ul>
 
