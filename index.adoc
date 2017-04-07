@@ -1,5 +1,6 @@
 = andreatta blog
 :showtitle:
+:page-root: https://andreatta.github.io/blog
 :page-title: andreatta blog
 :page-description: My extended RAM...
 
